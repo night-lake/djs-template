@@ -1,0 +1,19 @@
+{
+  "name": "djs-template",
+  "version": "1.0.0",
+  "description": "An objectively correct minimal discord.js template.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/night-lake/djs-template.git"
+  },
+  "author": "Amelia Katherine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/night-lake/djs-template/issues"
+  },
+  "homepage": "https://github.com/night-lake/djs-template#readme"
+}
