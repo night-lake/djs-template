@@ -1,19 +1,64 @@
 {
-  "name": "djs-template",
-  "version": "1.0.0",
-  "description": "An objectively correct minimal discord.js template.",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/night-lake/djs-template.git"
-  },
-  "author": "Amelia Katherine",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/night-lake/djs-template/issues"
-  },
-  "homepage": "https://github.com/night-lake/djs-template#readme"
+    "name": "djs-template",
+    "version": "1.0.0",
+    "description": "An objectively correct minimal discord.js template.",
+    "main": "dist",
+    "type": "module",
+    "scripts": {
+        "test": "npm run lint && npm run test:typescript",
+        "test:typescript": "tsc --noEmit",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "dev": "tsx watch src/index.ts",
+        "build": "rm -rf ./dist/ && tsc",
+        "start": "cross-env NODE_ENV=production node --enable-source-maps ."
+    },
+    "imports": {
+        "#api": "./dist/api/index.js",
+        "#classes": "./dist/classes/index.js",
+        "#env": "./dist/env/index.js",
+        "#handlers": "./dist/classes/handlers/index.js",
+        "#modules": "./dist/classes/modules/index.js",
+        "#types": "./dist/types/index.js",
+        "#util": "./dist/util/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/night-lake/djs-template.git"
+    },
+    "author": "Amelia Katherine",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/night-lake/djs-template/issues"
+    },
+    "homepage": "https://github.com/night-lake/djs-template#readme",
+    "dependencies": {
+        "@fastify/cookie": "^8.3.0",
+        "@fastify/cors": "^8.2.0",
+        "@prisma/client": "^4.8.0",
+        "bufferutil": "^4.0.7",
+        "cross-env": "^7.0.3",
+        "discord.js": "^14.7.1",
+        "dotenv": "^16.0.3",
+        "erlpack": "github:discord/erlpack",
+        "fast-jwt": "^2.0.2",
+        "fastify": "^4.10.2",
+        "i18next": "^22.4.6",
+        "i18next-fs-backend": "^2.1.1",
+        "utf-8-validate": "^5.0.10",
+        "yoctocolors": "^1.0.0",
+        "zlib-sync": "^0.1.7"
+    },
+    "devDependencies": {
+        "@types/i18next-fs-backend": "^1.1.2",
+        "@types/node": "^18.11.18",
+        "@typescript-eslint/eslint-plugin": "^5.47.1",
+        "@typescript-eslint/parser": "^5.47.1",
+        "eslint": "^8.30.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "prisma": "^4.8.0",
+        "tsx": "^3.12.1",
+        "typescript": "^4.9.4"
+    }
 }
