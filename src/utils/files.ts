@@ -28,6 +28,13 @@ export async function loadFile<T>(directory: string, file: string) {
     return { name, data };
 }
 
+export async function loadDirectory<T>(relativePath: string) {
+    const directory = join(getDirname(import.meta.url), relativePath);
+    const files = (await readdir(directory)).filter(f => f.endsWith('.js') || f.endsWith('.ts'));
+
+    return Promise.all(files.map(async file => loadFile<T>(directory, file)));
+}
+
 export async function loadParentDirectory<ParentT, ChildT>(relativePath: string) {
     const result: [Child<ParentT>[], Child<ChildT>[]] = [[], []];
 
@@ -45,9 +52,10 @@ export async function loadParentDirectory<ParentT, ChildT>(relativePath: string)
 
         if (file.isDirectory()) {
             const relativeDirectory = join(relativePath, parentFile);
+            const files = await loadDirectory<ChildT>(relativeDirectory);
 
             result[1].push(
-                ...(await loadDirectory<ChildT>(relativeDirectory)).map(data => ({
+                ...files.map(data => ({
                     name: `${parentFile}/${data.name}`,
                     data: data.data
                 }))
@@ -56,13 +64,6 @@ export async function loadParentDirectory<ParentT, ChildT>(relativePath: string)
     }
 
     return result;
-}
-
-export async function loadDirectory<T>(relativePath: string) {
-    const directory = join(getDirname(import.meta.url), relativePath);
-
-    const files = (await readdir(directory)).filter(f => f.endsWith('.js') || f.endsWith('.ts'));
-    return Promise.all(files.map(async file => loadFile<T>(directory, file)));
 }
 
 export async function loadRootDirectory<RootT, ParentT, ChildT>(relativePath: string) {
@@ -81,35 +82,23 @@ export async function loadRootDirectory<RootT, ParentT, ChildT>(relativePath: st
         const parentFile = await lstat(parentDirectory);
 
         if (parentFile.isDirectory()) {
-            const parentFiles = await readdir(parentDirectory);
+            const [parentFiles, childFiles] = await loadParentDirectory<ParentT, ChildT>(
+                join(relativePath, topLevelFile)
+            );
 
-            for (const parentFile of parentFiles) {
-                if (parentFile.endsWith('.js') || parentFile.endsWith('.ts')) {
-                    const file = await loadFile<ParentT>(parentDirectory, parentFile);
+            result[1].push(
+                ...parentFiles.map(data => ({
+                    name: `${topLevelFile}/${data.name}`,
+                    data: data.data
+                }))
+            );
 
-                    result[1].push({
-                        name: `${topLevelFile}/${file.name}`,
-                        data: file.data
-                    });
-                    continue;
-                }
-
-                const childDirectory = join(parentDirectory, parentFile);
-                const childFile = await lstat(childDirectory);
-
-                if (childFile.isDirectory()) {
-                    const childFiles = await readdir(childDirectory);
-
-                    for (const childFile of childFiles) {
-                        const file = await loadFile<ChildT>(childDirectory, childFile);
-
-                        result[2].push({
-                            name: `${topLevelFile}/${parentFile}/${file.name}`,
-                            data: file.data
-                        });
-                    }
-                }
-            }
+            result[2].push(
+                ...childFiles.map(data => ({
+                    name: `${topLevelFile}/${data.name}`,
+                    data: data.data
+                }))
+            );
         }
     }
 
