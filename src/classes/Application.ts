@@ -15,16 +15,5 @@ export class Application extends Client {
         });
     }
 
-    async init() {
-        const [rootCommands, parentCommands, childCommands] = await loadRootDirectory<Root, Parent, Child>(
-            '../commands'
-        );
-
-        console.log('root: ', inspect(rootCommands, { depth: 3 }));
-        console.log('\nparent: ', inspect(parentCommands, { depth: 3 }));
-        console.log('\nchild: ', inspect(childCommands, { depth: 3 }));
-        for (const cmd of rootCommands) {
-            console.log(cmd.data.hi);
-        }
-    }
+    async init() {}
 }
